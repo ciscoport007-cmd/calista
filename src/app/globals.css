@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-forest: #1A3626;
+  --color-forest-light: #2A4A38;
+  --color-gold: #D4AF37;
+  --color-gold-light: #E5C354;
+  --color-cream: #FDFCF0;
+  
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  --background: #FDFCF0; /* Cream background for the luxury feel */
+  --foreground: #1A3626; /* Deep forest green text */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif), Georgia, serif;
+}

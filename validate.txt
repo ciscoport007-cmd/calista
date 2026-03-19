@@ -1,0 +1,62 @@
+﻿node.exe : Loaded Pris
+ma config from prisma.
+config.ts.
+At line:1 char:1
++ & "C:\Program Files\
+nodejs/node.exe" "C:\P
+rogram Files\nodejs/no
+de_mo ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Loaded Pri   
+ sma c...isma.conf    
+ig.ts.:String) []    ,
+ RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+
+Prisma schema loaded f
+rom prisma\schema.pris
+ma.
+
+Error: Prisma schema v
+alidation - (validate 
+wasm)
+Error code: P1012
+error: The datasource 
+property `url` is no l
+onger supported in sch
+ema files. Move connec
+tion URLs for Migrate 
+to `prisma.config.ts` 
+and pass either `adapt
+er` for a direct datab
+ase connection or `acc
+elerateUrl` for Accele
+rate to the `PrismaCli
+ent` constructor. See 
+https://pris.ly/d/conf
+ig-datasource and http
+s://pris.ly/d/prisma7-
+client-config
+  -->  prisma\schema.p
+risma:7
+   | 
+ 6 |   provider = "sql
+ite"
+ 7 |   url      = env(
+"DATABASE_URL")
+   | 
+
+Validation Error Count
+: 1
+[Context: validate]
+
+Prisma CLI Version : 7
+.5.0

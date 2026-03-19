@@ -1,0 +1,78 @@
+﻿
+> tennis-booking@0.1.0 build
+> next build
+
+node.exe : ÔÜá Warning
+: Next.js inferred you
+r workspace root, but 
+it may not be correct.
+At line:1 char:1
++ & "C:\Program Files\
+nodejs/node.exe" "C:\P
+rogram Files\nodejs/no
+de_mo ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (ÔÜá Warnin   
+ g: Ne...not be co    
+rrect.:String) []    ,
+ RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+ We detected multiple 
+lockfiles and selected
+ the directory of C:\U
+sers\Cinema\package-lo
+ck.json as the root di
+rectory.
+ To silence this warni
+ng, set `turbopack.roo
+t` in your Next.js con
+fig, or consider remov
+ing one of the lockfil
+es if it's not needed.
+   See https://nextjs.
+org/docs/app/api-refer
+ence/config/next-confi
+g-js/turbopack#root-di
+rectory for more infor
+mation.
+ Detected additional l
+ockfiles: 
+   * C:\Users\Cinema\D
+esktop\Courts\tennis-b
+ooking\package-lock.js
+on
+
+Ôû▓ Next.js 16.2.0 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 5.1s
+  Running TypeScript ...
+  Finished TypeScript in 5.6s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/4) ...
+  Generating static pages using 7 workers (1/4) 
+  Generating static pages using 7 workers (2/4) 
+  Generating static pages using 7 workers (3/4) 
+Ô£ô Generating static pages using 7 workers (4/4) in 606ms
+  Finalizing page optimization ...
+
+Route (app)
+Ôöî Ôùï /
+Ôö£ Ôùï /_not-found
+Ôö£ ãÆ /admin
+Ôö£ ãÆ /api/bookings
+Ôöö ãÆ /api/slots
+
+
+Ôùï  (Static)   prerendered as static content
+ãÆ  (Dynamic)  server-rendered on demand
+
