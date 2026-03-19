@@ -17,7 +17,7 @@ export default function LoginForm() {
       setError(res.error);
       setLoading(false);
     } else {
-      window.location.reload();
+      window.location.href = "/admin";
     }
   };
 
@@ -26,25 +26,22 @@ export default function LoginForm() {
       <div className="bg-white text-forest p-10 max-w-sm w-full shadow-2xl">
         <h2 className="text-2xl font-serif mb-6 text-center">Admin Access</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input 
-              type="password" 
-              placeholder="Enter Password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold"
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold"
+          />
           {error && <div className="text-red-500 text-sm">{error}</div>}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
-            className="w-full bg-gold hover:bg-gold-light text-forest py-3 uppercase tracking-widest font-medium transition-colors"
+            className="w-full bg-gold hover:bg-gold-light text-forest py-3 uppercase tracking-widest font-medium transition-colors disabled:opacity-60"
           >
             {loading ? "Authenticating..." : "Login"}
           </button>
         </form>
-        <p className="text-xs text-forest/50 text-center mt-6">Hint: password is luxuryadmin</p>
       </div>
     </div>
   );

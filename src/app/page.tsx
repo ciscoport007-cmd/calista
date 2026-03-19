@@ -19,7 +19,7 @@ export default function Home() {
         {/* Hero Section */}
         <section 
           className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center bg-forest bg-cover bg-center overflow-hidden text-cream"
-          style={{ backgroundImage: "url('https://calista.com.tr/media/c2sl3pug/calista-resort-hotel-blog-tenis-banner.jpg')" }}
+          style={{ backgroundImage: "url('/hero-court.jpg')" }}
         >
           <div className="absolute inset-0 bg-black/40 z-10" />
           <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
