@@ -2,9 +2,9 @@ import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 
 async function getTransporter() {
-  const settings = await prisma.$queryRaw<{ key: string; value: string }[]>`
-    SELECT key, value FROM Setting WHERE key IN ('gmailUser', 'gmailPass')
-  `;
+  const settings = await prisma.setting.findMany({
+    where: { key: { in: ["gmailUser", "gmailPass"] } },
+  });
   const map = Object.fromEntries(settings.map((s) => [s.key, s.value]));
   const user = map["gmailUser"] ?? "";
   const pass = map["gmailPass"] ?? "";
@@ -23,9 +23,9 @@ async function send(to: string, subject: string, html: string) {
     console.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
     return;
   }
-  const gmailSettings = await prisma.$queryRaw<{ key: string; value: string }[]>`
-    SELECT key, value FROM Setting WHERE key = 'gmailUser'
-  `;
+  const gmailSettings = await prisma.setting.findMany({
+    where: { key: "gmailUser" },
+  });
   const from = `Calista Tennis Courts <${gmailSettings[0]?.value ?? "no-reply@calistatennis.com"}>`;
   try {
     await transporter.sendMail({ from, to, subject, html });

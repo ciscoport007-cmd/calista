@@ -69,10 +69,11 @@ export async function unblockTimeSlot(id: string) {
 
 export async function updateSetting(key: string, value: string) {
   try {
-    await prisma.$executeRaw`
-      INSERT INTO Setting (key, value) VALUES (${key}, ${value})
-      ON CONFLICT(key) DO UPDATE SET value = excluded.value
-    `;
+    await prisma.setting.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value },
+    });
     revalidatePath("/admin");
     return { success: true };
   } catch (error) {

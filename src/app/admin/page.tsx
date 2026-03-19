@@ -33,7 +33,6 @@ export default async function AdminPage() {
     .filter((b) => b.timeSlot.date >= weekStart && b.timeSlot.date <= weekEnd)
     .reduce((sum, b) => sum + b.totalPrice, 0);
 
-  // Daily revenue for last 7 days
   const dailyRevenue: { date: string; revenue: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = format(subDays(new Date(), i), "yyyy-MM-dd");
@@ -43,13 +42,13 @@ export default async function AdminPage() {
     dailyRevenue.push({ date: d, revenue: rev });
   }
 
-  const settingsRows = await prisma.$queryRaw<{ key: string; value: string }[]>`SELECT key, value FROM Setting`;
+  // Use Prisma client directly (regenerated, knows all models/fields)
+  const settingsRows = await prisma.setting.findMany();
   const settings = Object.fromEntries(settingsRows.map((s) => [s.key, s.value]));
 
-  // Fetch roomNumber for each booking via raw SQL
-  const roomNumbers = await prisma.$queryRaw<{ id: string; roomNumber: string | null }[]>`
-    SELECT id, roomNumber FROM Booking
-  `;
+  const roomNumbers = await prisma.booking.findMany({
+    select: { id: true, roomNumber: true },
+  });
   const roomMap = Object.fromEntries(roomNumbers.map((r) => [r.id, r.roomNumber ?? ""]));
 
   return (

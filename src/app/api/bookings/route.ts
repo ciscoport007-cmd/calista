@@ -79,12 +79,16 @@ export async function POST(request: Request) {
     }
 
     // Price calculation using court base price + DB add-on prices
-    const addonSettings = await prisma.$queryRaw<{ key: string; value: string }[]>`
-      SELECT key, value FROM "Setting" WHERE key IN (
-        'equipmentPrice','professionalEquipmentPrice','ballsOnlyPrice',
-        'coachingPrice','professionalCoachingPrice'
-      )
-    `;
+    const addonSettings = await prisma.setting.findMany({
+      where: {
+        key: {
+          in: [
+            "equipmentPrice", "professionalEquipmentPrice", "ballsOnlyPrice",
+            "coachingPrice", "professionalCoachingPrice",
+          ],
+        },
+      },
+    });
     const addonMap = Object.fromEntries(addonSettings.map((s) => [s.key, parseFloat(s.value)]));
 
     const base = court.basePrice;
@@ -114,9 +118,11 @@ export async function POST(request: Request) {
       },
     });
 
-    // Store roomNumber via raw SQL (Prisma client predates this field)
     if (roomNumber) {
-      await prisma.$executeRaw`UPDATE Booking SET roomNumber = ${roomNumber} WHERE id = ${booking.id}`;
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: { roomNumber },
+      });
     }
 
     const ref = booking.id.split("-")[0].toUpperCase();
