@@ -48,9 +48,16 @@ export default function BookingWidget() {
 
   // Step 4 — Add-ons
   const [equipment, setEquipment] = useState(false);
+  const [professionalEquipment, setProfessionalEquipment] = useState(false);
+  const [ballsOnly, setBallsOnly] = useState(false);
   const [coaching, setCoaching] = useState(false);
+  const [professionalCoaching, setProfessionalCoaching] = useState(false);
+
   const [equipmentPrice, setEquipmentPrice] = useState(30);
+  const [professionalEquipmentPrice, setProfessionalEquipmentPrice] = useState(50);
+  const [ballsOnlyPrice, setBallsOnlyPrice] = useState(10);
   const [coachingPrice, setCoachingPrice] = useState(120);
+  const [professionalCoachingPrice, setProfessionalCoachingPrice] = useState(180);
 
   // Submission
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,7 +76,10 @@ export default function BookingWidget() {
       .then((r) => r.json())
       .then((d) => {
         setEquipmentPrice(d.equipmentPrice ?? 30);
+        setProfessionalEquipmentPrice(d.professionalEquipmentPrice ?? 50);
+        setBallsOnlyPrice(d.ballsOnlyPrice ?? 10);
         setCoachingPrice(d.coachingPrice ?? 120);
+        setProfessionalCoachingPrice(d.professionalCoachingPrice ?? 180);
       });
   }, []);
 
@@ -105,7 +115,10 @@ export default function BookingWidget() {
           roomNumber,
           guests,
           equipment,
+          professionalEquipment,
+          ballsOnly,
           coaching,
+          professionalCoaching,
         }),
       });
       const data = await res.json();
@@ -121,7 +134,13 @@ export default function BookingWidget() {
 
   // Price calc
   const base = selectedCourt?.basePrice ?? 50;
-  const subtotal = base + (equipment ? equipmentPrice : 0) + (coaching ? coachingPrice : 0);
+  const subtotal =
+    base +
+    (equipment             ? equipmentPrice             : 0) +
+    (professionalEquipment ? professionalEquipmentPrice : 0) +
+    (ballsOnly             ? ballsOnlyPrice             : 0) +
+    (coaching              ? coachingPrice              : 0) +
+    (professionalCoaching  ? professionalCoachingPrice  : 0);
   const serviceCharge = subtotal * 0.1;
   const gst = subtotal * 0.09;
   const total = subtotal + serviceCharge + gst;
@@ -371,39 +390,88 @@ export default function BookingWidget() {
           <p className="text-sm text-forest/60 font-sans mb-8">
             Optional extras for your session.
           </p>
-          <div className="space-y-4">
-            <div
-              className={`p-6 border cursor-pointer transition-all ${
-                equipment ? "border-gold bg-gold/5" : "border-forest/20 hover:border-gold/50"
-              }`}
-              onClick={() => setEquipment(!equipment)}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-serif text-xl text-forest mb-1">Premium Equipment Rental</h4>
-                  <p className="text-sm text-forest/70 font-sans">
-                    Two professional rackets + fresh can of balls.
-                  </p>
+          <div className="space-y-3">
+            {/* Equipment packages */}
+            <p className="text-xs font-sans tracking-widest uppercase text-forest/50 pt-2">Equipment</p>
+            {[
+              {
+                active: equipment, toggle: () => setEquipment(!equipment),
+                title: "Premium Equipment Rental",
+                desc: "Two professional rackets + fresh can of balls.",
+                price: equipmentPrice,
+              },
+              {
+                active: professionalEquipment, toggle: () => setProfessionalEquipment(!professionalEquipment),
+                title: "Professional Equipment Rental",
+                desc: "Pro-grade rackets, premium balls + equipment bag. Top-tier gear for serious players.",
+                price: professionalEquipmentPrice,
+              },
+              {
+                active: ballsOnly, toggle: () => setBallsOnly(!ballsOnly),
+                title: "Ball Package",
+                desc: "Fresh can of tennis balls only. Perfect if you have your own racket.",
+                price: ballsOnlyPrice,
+              },
+            ].map((addon) => (
+              <div
+                key={addon.title}
+                className={`p-5 border cursor-pointer transition-all ${
+                  addon.active ? "border-gold bg-gold/5" : "border-forest/20 hover:border-gold/50"
+                }`}
+                onClick={addon.toggle}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-5 h-5 mt-0.5 flex-shrink-0 border-2 rounded-sm flex items-center justify-center ${addon.active ? "border-gold bg-gold" : "border-forest/30"}`}>
+                      {addon.active && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>}
+                    </div>
+                    <div>
+                      <h4 className="font-serif text-lg text-forest leading-tight">{addon.title}</h4>
+                      <p className="text-xs text-forest/60 font-sans mt-0.5">{addon.desc}</p>
+                    </div>
+                  </div>
+                  <span className="font-sans font-medium text-forest flex-shrink-0">+€{addon.price}</span>
                 </div>
-                <span className="font-sans font-medium text-forest">+€{equipmentPrice}</span>
               </div>
-            </div>
-            <div
-              className={`p-6 border cursor-pointer transition-all ${
-                coaching ? "border-gold bg-gold/5" : "border-forest/20 hover:border-gold/50"
-              }`}
-              onClick={() => setCoaching(!coaching)}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-serif text-xl text-forest mb-1">Private Coaching Session</h4>
-                  <p className="text-sm text-forest/70 font-sans">
-                    60-minute session with our resident pro coach.
-                  </p>
+            ))}
+
+            {/* Coaching packages */}
+            <p className="text-xs font-sans tracking-widest uppercase text-forest/50 pt-4">Coaching</p>
+            {[
+              {
+                active: coaching, toggle: () => setCoaching(!coaching),
+                title: "Private Coaching Session",
+                desc: "60-minute one-on-one session with our resident pro coach.",
+                price: coachingPrice,
+              },
+              {
+                active: professionalCoaching, toggle: () => setProfessionalCoaching(!professionalCoaching),
+                title: "Professional Coaching Session",
+                desc: "90-minute intensive session with video analysis, tactical advice and personalised training plan.",
+                price: professionalCoachingPrice,
+              },
+            ].map((addon) => (
+              <div
+                key={addon.title}
+                className={`p-5 border cursor-pointer transition-all ${
+                  addon.active ? "border-gold bg-gold/5" : "border-forest/20 hover:border-gold/50"
+                }`}
+                onClick={addon.toggle}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-5 h-5 mt-0.5 flex-shrink-0 border-2 rounded-sm flex items-center justify-center ${addon.active ? "border-gold bg-gold" : "border-forest/30"}`}>
+                      {addon.active && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>}
+                    </div>
+                    <div>
+                      <h4 className="font-serif text-lg text-forest leading-tight">{addon.title}</h4>
+                      <p className="text-xs text-forest/60 font-sans mt-0.5">{addon.desc}</p>
+                    </div>
+                  </div>
+                  <span className="font-sans font-medium text-forest flex-shrink-0">+€{addon.price}</span>
                 </div>
-                <span className="font-sans font-medium text-forest">+€{coachingPrice}</span>
               </div>
-            </div>
+            ))}
           </div>
           <div className="mt-8 flex justify-between">
             <button onClick={handleBack} className="text-forest/70 hover:text-forest px-4 font-sans tracking-widest uppercase text-sm">
@@ -455,14 +523,32 @@ export default function BookingWidget() {
             </div>
             {equipment && (
               <div className="flex justify-between mb-2">
-                <span className="text-forest/70">Equipment Rental</span>
+                <span className="text-forest/70">Premium Equipment Rental</span>
                 <span className="text-forest">€{equipmentPrice.toFixed(2)}</span>
+              </div>
+            )}
+            {professionalEquipment && (
+              <div className="flex justify-between mb-2">
+                <span className="text-forest/70">Professional Equipment Rental</span>
+                <span className="text-forest">€{professionalEquipmentPrice.toFixed(2)}</span>
+              </div>
+            )}
+            {ballsOnly && (
+              <div className="flex justify-between mb-2">
+                <span className="text-forest/70">Ball Package</span>
+                <span className="text-forest">€{ballsOnlyPrice.toFixed(2)}</span>
               </div>
             )}
             {coaching && (
               <div className="flex justify-between mb-2">
-                <span className="text-forest/70">Private Coaching</span>
+                <span className="text-forest/70">Private Coaching Session</span>
                 <span className="text-forest">€{coachingPrice.toFixed(2)}</span>
+              </div>
+            )}
+            {professionalCoaching && (
+              <div className="flex justify-between mb-2">
+                <span className="text-forest/70">Professional Coaching Session</span>
+                <span className="text-forest">€{professionalCoachingPrice.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between mb-2 text-sm text-forest/50">

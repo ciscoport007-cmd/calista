@@ -51,9 +51,12 @@ model Booking {
   userId          String
   slotId          String
   courtId         String
-  roomNumber      String?
-  equipmentRental Boolean  @default(false)
-  coaching        Boolean  @default(false)
+  roomNumber             String?
+  equipmentRental        Boolean  @default(false)
+  professionalEquipment  Boolean  @default(false)
+  ballsOnly              Boolean  @default(false)
+  coaching               Boolean  @default(false)
+  professionalCoaching   Boolean  @default(false)
   status          String   @default("pending") // pending, confirmed, cancelled, completed
   totalPrice      Float
   createdAt       DateTime @default(now())

@@ -7,7 +7,11 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { date, time, courtId, name, email, phone, roomNumber, guests, equipment, coaching } = body;
+    const {
+      date, time, courtId, name, email, phone, roomNumber, guests,
+      equipment, professionalEquipment, ballsOnly,
+      coaching, professionalCoaching,
+    } = body;
 
     if (!date || !time || !courtId || !name || !email) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -76,14 +80,21 @@ export async function POST(request: Request) {
 
     // Price calculation using court base price + DB add-on prices
     const addonSettings = await prisma.$queryRaw<{ key: string; value: string }[]>`
-      SELECT key, value FROM Setting WHERE key IN ('equipmentPrice', 'coachingPrice')
+      SELECT key, value FROM "Setting" WHERE key IN (
+        'equipmentPrice','professionalEquipmentPrice','ballsOnlyPrice',
+        'coachingPrice','professionalCoachingPrice'
+      )
     `;
     const addonMap = Object.fromEntries(addonSettings.map((s) => [s.key, parseFloat(s.value)]));
-    const equipmentPrice = addonMap["equipmentPrice"] ?? 30;
-    const coachingPrice = addonMap["coachingPrice"] ?? 120;
 
     const base = court.basePrice;
-    const subtotal = base + (equipment ? equipmentPrice : 0) + (coaching ? coachingPrice : 0);
+    const subtotal =
+      base +
+      (equipment             ? (addonMap["equipmentPrice"]             ?? 30)  : 0) +
+      (professionalEquipment ? (addonMap["professionalEquipmentPrice"] ?? 50)  : 0) +
+      (ballsOnly             ? (addonMap["ballsOnlyPrice"]             ?? 10)  : 0) +
+      (coaching              ? (addonMap["coachingPrice"]              ?? 120) : 0) +
+      (professionalCoaching  ? (addonMap["professionalCoachingPrice"]  ?? 180) : 0);
     const serviceCharge = subtotal * 0.1;
     const gst = subtotal * 0.09;
     const totalPrice = Math.round((subtotal + serviceCharge + gst) * 100) / 100;
@@ -93,8 +104,11 @@ export async function POST(request: Request) {
         userId: user.id,
         slotId: timeSlot.id,
         courtId,
-        equipmentRental: equipment,
-        coaching: coaching,
+        equipmentRental:       equipment             ?? false,
+        professionalEquipment: professionalEquipment ?? false,
+        ballsOnly:             ballsOnly             ?? false,
+        coaching:              coaching              ?? false,
+        professionalCoaching:  professionalCoaching  ?? false,
         totalPrice,
         status: "pending",
       },

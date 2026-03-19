@@ -82,7 +82,10 @@ export default function AdminDashboard({
 
   // Settings
   const [equipmentPrice, setEquipmentPrice] = useState(settings["equipmentPrice"] ?? "30");
+  const [professionalEquipmentPrice, setProfessionalEquipmentPrice] = useState(settings["professionalEquipmentPrice"] ?? "50");
+  const [ballsOnlyPrice, setBallsOnlyPrice] = useState(settings["ballsOnlyPrice"] ?? "10");
   const [coachingPrice, setCoachingPrice] = useState(settings["coachingPrice"] ?? "120");
+  const [professionalCoachingPrice, setProfessionalCoachingPrice] = useState(settings["professionalCoachingPrice"] ?? "180");
   const [gmailUser, setGmailUser] = useState(settings["gmailUser"] ?? "");
   const [gmailPass, setGmailPass] = useState(settings["gmailPass"] ?? "");
   const [showPass, setShowPass] = useState(false);
@@ -156,7 +159,10 @@ export default function AdminDashboard({
     setSettingsMsg("");
     await Promise.all([
       updateSetting("equipmentPrice", equipmentPrice),
+      updateSetting("professionalEquipmentPrice", professionalEquipmentPrice),
+      updateSetting("ballsOnlyPrice", ballsOnlyPrice),
       updateSetting("coachingPrice", coachingPrice),
+      updateSetting("professionalCoachingPrice", professionalCoachingPrice),
       updateSetting("gmailUser", gmailUser),
       updateSetting("gmailPass", gmailPass),
     ]);
@@ -284,10 +290,13 @@ export default function AdminDashboard({
                         <td className="py-3 pr-3 text-forest/70">
                           {roomMap[b.id] || <span className="text-forest/30">—</span>}
                         </td>
-                        <td className="py-3 pr-3">
-                          {b.equipmentRental && <div>Racket (+€30)</div>}
-                          {b.coaching && <div>Coach (+€120)</div>}
-                          {!b.equipmentRental && !b.coaching && <span className="text-forest/30">—</span>}
+                        <td className="py-3 pr-3 text-xs space-y-0.5">
+                          {b.equipmentRental       && <div>Premium Equip.</div>}
+                          {b.professionalEquipment && <div>Pro Equip.</div>}
+                          {b.ballsOnly             && <div>Balls Only</div>}
+                          {b.coaching              && <div>Coaching</div>}
+                          {b.professionalCoaching  && <div>Pro Coaching</div>}
+                          {!b.equipmentRental && !b.professionalEquipment && !b.ballsOnly && !b.coaching && !b.professionalCoaching && <span className="text-forest/30">—</span>}
                         </td>
                         <td className="py-3 pr-3 font-medium">€{b.totalPrice.toFixed(2)}</td>
                         <td className="py-3 pr-3">
@@ -459,33 +468,32 @@ export default function AdminDashboard({
               <p className="text-sm text-forest/60 mb-6">
                 Prices shown to guests at checkout and used in total calculations.
               </p>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs tracking-widest uppercase text-forest/70 mb-2">
-                    Equipment Rental Price (€)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={equipmentPrice}
-                    onChange={(e) => setEquipmentPrice(e.target.value)}
-                    className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs tracking-widest uppercase text-forest/70 mb-2">
-                    Private Coaching Price (€)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={coachingPrice}
-                    onChange={(e) => setCoachingPrice(e.target.value)}
-                    className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold text-sm"
-                  />
-                </div>
+              <div className="space-y-3">
+                <p className="text-xs tracking-widest uppercase text-forest/40 pb-1 border-b border-forest/10">Equipment</p>
+                {[
+                  { label: "Premium Equipment Rental (€)", value: equipmentPrice, set: setEquipmentPrice },
+                  { label: "Professional Equipment Rental (€)", value: professionalEquipmentPrice, set: setProfessionalEquipmentPrice },
+                  { label: "Ball Package (€)", value: ballsOnlyPrice, set: setBallsOnlyPrice },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <label className="block text-xs tracking-widest uppercase text-forest/70 mb-1">{f.label}</label>
+                    <input type="number" min="0" step="1" value={f.value}
+                      onChange={(e) => f.set(e.target.value)}
+                      className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold text-sm" />
+                  </div>
+                ))}
+                <p className="text-xs tracking-widest uppercase text-forest/40 pb-1 border-b border-forest/10 pt-2">Coaching</p>
+                {[
+                  { label: "Private Coaching Session (€)", value: coachingPrice, set: setCoachingPrice },
+                  { label: "Professional Coaching Session (€)", value: professionalCoachingPrice, set: setProfessionalCoachingPrice },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <label className="block text-xs tracking-widest uppercase text-forest/70 mb-1">{f.label}</label>
+                    <input type="number" min="0" step="1" value={f.value}
+                      onChange={(e) => f.set(e.target.value)}
+                      className="w-full p-3 border border-forest/20 focus:outline-none focus:border-gold text-sm" />
+                  </div>
+                ))}
               </div>
             </div>
 
