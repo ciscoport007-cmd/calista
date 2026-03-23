@@ -7,8 +7,9 @@ export const dynamic = "force-dynamic";
 // GET /api/cancel?ref=ABCD1234&email=user@example.com
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const ref = searchParams.get("ref")?.toLowerCase();
-  const email = searchParams.get("email")?.toLowerCase();
+  const rawRef = searchParams.get("ref")?.toLowerCase().trim();
+  const ref = rawRef?.startsWith("ctc-") ? rawRef.slice(4) : rawRef;
+  const email = searchParams.get("email")?.toLowerCase().trim();
 
   if (!ref || !email) {
     return NextResponse.json({ error: "ref and email are required" }, { status: 400 });
